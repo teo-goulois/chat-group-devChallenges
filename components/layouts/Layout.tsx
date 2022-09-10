@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Backdrop from "../backdrops/BackdropSidebar";
 import ModalContainer from "../ModalContainer";
 import Navbar from "../navbar/Navbar";
-import Sidebar from "../sidebar/sidebar/Sidebar";
 import SidebarChannels from "../sidebar/sidebarChannels/SidebarChannels";
 
 type Props = {
@@ -20,10 +19,9 @@ const Layout = ({ children }: Props) => {
     useState<boolean>(false);
   const [channelName, setChannelName] = useState<string>("");
 
-  const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(false);
 
   return (
-    <div className="h-screen w-screen bg-gray-500 font-['Noto Sans'] flex items-star overflow-hiddent">
+    <div className="h-screen w-screen bg-gray-500 font-['Noto Sans'] flex items-star overflow-hidden">
       <div className="hidden md:flex relative h-full">
         <SidebarChannels setChannelName={setChannelName} />
       </div>
