@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import dbConnect from "../../lib/dbConnect";
-import Conversation from "../../model/Conversation";
-import User from "../../model/User";
+import dbConnect from "../../../lib/dbConnect";
+import Conversation from "../../../model/Conversation";
+import User from "../../../model/User";
 type Data = {
   name: string;
 };

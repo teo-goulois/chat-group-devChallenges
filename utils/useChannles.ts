@@ -1,4 +1,6 @@
+import { User } from "next-auth";
 import useSWRInfinite from "swr/infinite";
+import { UserSmallInfos } from "../types/typing";
 
 type UseChannelsProps = {
   userID: string | undefined;
@@ -32,16 +34,67 @@ function useChannels({ userID, query, pageSize }: UseChannelsProps) {
       members: string[];
     };
   }) => {
-    mutate(async (t) => {      
+    mutate(async (t) => {
       const response = await fetch(`/api/channels`, {
         body: JSON.stringify(body),
         method: "POST",
       });
       const data = await response.json();
-      
+
       if (!t) return;
       return [data, ...t];
     });
+  };
+
+  type AddUserProps = {
+    channelID: string;
+    user: User;
+  };
+
+  const addUser = async ({ channelID, user }: AddUserProps) => {
+    const res = await fetch(
+      `/api/channels/user?conversationID=${channelID}&userID=${userID}`,
+      { method: "PUT" }
+    );
+    if (res.status === 200) {
+      return mutate((channels) => {
+        const arr = [],
+          size = 10;
+        let newIssue = issues.find((item) => item._id === channelID);
+        if (!newIssue) return;
+        newIssue.members = [
+          ...newIssue.members,
+          { _id: user._id, image: user.image, name: user.name },
+        ];
+        if (!channels) return;
+        while (channels.length > 0) arr.push(channels.splice(0, size));
+        return arr[0];
+      }, false);
+    }
+    return console.log("an error occured please try again later");
+  };
+
+  const removeUser = async ({ channelID, user }: AddUserProps) => {
+    const res = await fetch(
+      `/api/channels/user?conversationID=${channelID}&userID=${user._id}`,
+      { method: "PATCH" }
+    );
+    if (res.status === 200) {
+      return mutate((channels) => {
+        const arr = [],
+          size = 10;
+        let newIssue = issues.find((item) => item._id === channelID);
+        if (!newIssue) return;
+        newIssue.members = newIssue.members.filter(
+          (item: UserSmallInfos) => item._id !== user._id
+        );
+        if (!channels) return;
+        const newChannels = channels.filter((item) => item._id !== channelID);
+        while (newChannels.length > 0) arr.push(newChannels.splice(0, size));
+        return arr[0];
+      }, false);
+    }
+    return console.log("an error occured please try again later");
   };
 
   return {
@@ -55,7 +108,9 @@ function useChannels({ userID, query, pageSize }: UseChannelsProps) {
     channelsIsEmpty: isEmpty,
     channelsIsReachingEnd: isReachingEnd,
     channelsIsRefreshing: isRefreshing,
-    createChannel
+    createChannel,
+    addUser,
+    removeUser,
   };
 }
 export default useChannels;

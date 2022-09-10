@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { ArrowDownIcon } from "../../../icons/Icons";
 import { Channel } from "../../../types/typing";
+import useChannels from "../../../utils/useChannles";
 import useConnectedUser from "../../../utils/useConnectedUser";
 import MemberCard from "./MemberCard";
 
@@ -18,6 +19,18 @@ type Props = {
 
 const Sidebar = ({ isOpen, close, channelInfo }: Props) => {
   const { user } = useConnectedUser();
+  const { removeUser } = useChannels({
+    pageSize: 10,
+    query: "",
+    userID: user?._id,
+  });
+  const handleLeave = () => {
+    removeUser({
+      channelID: channelInfo?._id as string,
+      user: user,
+    });
+    close();
+  };
   return (
     <motion.div
       variants={variants}
@@ -34,7 +47,10 @@ const Sidebar = ({ isOpen, close, channelInfo }: Props) => {
           </button>
           <h1 className="text-primary font-bold text-lg">All channels</h1>
         </div>
-        <div className="p-6">
+        <div
+          style={{ height: "calc(100% - 4.5rem)" }}
+          className="p-6 flex flex-col items-start"
+        >
           {/* title */}
           <h2 className="text-primary text-lg font-bold uppercase tracking-tight mb-4">
             {channelInfo?.name}
@@ -46,12 +62,21 @@ const Sidebar = ({ isOpen, close, channelInfo }: Props) => {
             Members
           </h2>
           {/* card */}
-          {channelInfo?.members.map((member) => {
-            return <MemberCard key={member._id} userInfo={member} />;
-          })}
+          <div className="flex flex-col gap-2 flex-1 w-full ">
+            {channelInfo?.members.map((member) => {
+              return <MemberCard key={member._id} userInfo={member} />;
+            })}
+          </div>
+          <button
+            type="button"
+            onClick={handleLeave}
+            className="bg-red text-primary text-lg font-medium px-4 py-2 rounded-lg hover:scale-105 transition-transform relative top-0"
+          >
+            leave
+          </button>
         </div>
       </div>
-      <footer className="static bottom-0 py-6 px-8 flex items-center bg-gray-900">
+      <footer className="relative bottom-0 py-6 px-8 flex items-center bg-gray-900">
         <div className="flex-1 flex items-center">
           <div className="w-12 h-12 rounded-lg overflow-hidden mr-8">
             <img

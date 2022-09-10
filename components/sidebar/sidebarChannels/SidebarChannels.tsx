@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import {
-  AddIcon,
-  SearchIcon,
-} from "../../../icons/Icons";
+import { AddIcon, SearchIcon } from "../../../icons/Icons";
 import useChannels from "../../../utils/useChannles";
 import useConnectedUser from "../../../utils/useConnectedUser";
 import BackdropInvisible from "../../backdrops/BackdropInvisible";
@@ -22,21 +19,21 @@ const variants = {
 };
 
 type Props = {
-  setChannelName: React.Dispatch<React.SetStateAction<string>>
-
-
+  setChannelName: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const SidebarChannels = ({ setChannelName }: Props) => {
-  const router = useRouter()
+  const router = useRouter();
   const { user } = useConnectedUser();
   const [searchInput, setSearchInput] = useState<string>("");
   const debouncedQuery = useDebounce(searchInput, 500);
-  const { channels, channelsIsError, channelsIsLoading } = useChannels({
-    pageSize: 5,
-    query: debouncedQuery,
-    userID: user?._id,
-  });
+  const { channels, channelsIsError, channelsIsLoading, addUser } = useChannels(
+    {
+      pageSize: 5,
+      query: debouncedQuery,
+      userID: user?._id,
+    }
+  );
 
   const [activeChannel, setActiveChannel] = useState<null | Channel>(null);
   const { modalOpen, close, open } = useModal();
@@ -50,6 +47,23 @@ const SidebarChannels = ({ setChannelName }: Props) => {
     useState<boolean>(false);
   const handleAddChannel = () => {
     setCreateChannelIsOpen(true);
+  };
+
+  const handleClick = async (chan: Channel) => {
+    console.log(chan, "chan");
+    const membersIds = chan.members.map((member) => {
+      return member._id;
+    });
+    if (user && !membersIds.includes(user._id)) {
+      addUser({
+        channelID: chan._id,
+        user: user,
+      });
+    }
+    setChannelName(chan.name);
+    router.push(`/channels/${chan._id}`);
+    setActiveChannel(chan);
+    openChannel();
   };
 
   return (
@@ -115,12 +129,7 @@ const SidebarChannels = ({ setChannelName }: Props) => {
                     <li key={channel._id}>
                       <ChannelCard
                         channel={channel}
-                        handleClick={(chan) => {
-                          setChannelName(chan.name)
-                          router.push(`/channels/${chan._id}`)
-                          setActiveChannel(chan);
-                          openChannel();
-                        }}
+                        handleClick={handleClick}
                       />
                     </li>
                   );
@@ -130,7 +139,12 @@ const SidebarChannels = ({ setChannelName }: Props) => {
           </div>
         </div>
         {modalOpen && <BackdropInvisible onClick={close}></BackdropInvisible>}
-        <Footer modalOpen={modalOpen} open={open} userImge={user?.image} userName={user?.name} />
+        <Footer
+          modalOpen={modalOpen}
+          open={open}
+          userImge={user?.image}
+          userName={user?.name}
+        />
       </div>
     </>
   );
