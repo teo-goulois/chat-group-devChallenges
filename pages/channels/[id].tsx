@@ -1,13 +1,13 @@
-import { useRouter } from "next/router";
 import React, { FormEvent, useEffect, useState } from "react";
-import io from "socket.io-client";
+import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 
 // Components
 import Chat from "../../components/channel/Chat";
 import Input from "../../components/channel/Input";
-import useSocket from "../../hooks/useSocket";
+// types
 import { Chat as ChatType } from "../../types/typing";
+// data relative
 import useChats from "../../utils/useChats";
 import useConnectedUser from "../../utils/useConnectedUser";
 

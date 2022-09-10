@@ -7,9 +7,6 @@ import { Chat as ChatType } from "../../types/typing";
 import Pusher from "pusher";
 import getEnvVar from "../../utils/getEnvVar";
 
-type Data = {
-  name: string;
-};
 
 const pusher = new Pusher({
   appId: getEnvVar("PUSHER_APP_ID"),

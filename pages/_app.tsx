@@ -1,11 +1,11 @@
-import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import { useRouter } from "next/router";
+import { SWRConfig } from "swr";
 // provider
 import { SessionProvider } from "next-auth/react";
 // Layout
 import Layout from "../components/layouts/Layout";
-import { useRouter } from "next/router";
-import { SWRConfig } from "swr";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const router = useRouter();

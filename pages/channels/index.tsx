@@ -1,8 +1,4 @@
-import type { NextPage } from "next";
-// Icons
 import React from "react";
-import Chat from "../../components/channel/Chat";
-import Input from "../../components/channel/Input";
 
 type Props = {
   handleButton: () => void;
