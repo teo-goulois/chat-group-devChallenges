@@ -1,20 +1,18 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-// Icons
-import React from "react";
-import Chat from "../components/channel/Chat";
-import Input from "../components/channel/Input";
+import React from 'react'
 
-const Home: NextPage = () => {
+const index = () => {
   return (
-    <div className="flex flex-col h-[94%] p-2 ">
-      <div className="flex-1">
-      <Chat />
-      </div>
-      <Input />
-    </div>
-  );
-};
+    <div>index</div>
+  )
+}
 
-export default Home;
+export default index
+export function getStaticProps() {
+    return {
+      // returns a redirect to an internal page `/another-page`
+      redirect: {
+        destination: '/channels',
+        permanent: false,
+      },
+    };
+  }
