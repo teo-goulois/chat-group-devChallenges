@@ -23,7 +23,7 @@ const Layout = ({ children }: Props) => {
   const [sidebarIsOpen, setSidebarIsOpen] = useState<boolean>(false);
 
   return (
-    <div className="h-screen w-screen bg-gray-500 font-['Noto Sans'] flex items-start">
+    <div className="h-screen w-screen bg-gray-500 font-['Noto Sans'] flex items-star overflow-hiddent">
       <div className="hidden md:flex relative h-full">
         <SidebarChannels setChannelName={setChannelName} />
       </div>
