@@ -125,11 +125,11 @@ export const getKey = (
     return userID
       ? `/api/channels?userID=${userID}&q=${encodeURIComponent(q)}&page=${
           pageIndex * pageSize
-        }&limite=${pageSize}`
+        }&limit=${pageSize}`
       : null;
   }
 
   return userID
-    ? `/api/channels?userID=${userID}&page=${pageIndex * pageSize}&limite=${pageSize}`
+    ? `/api/channels?userID=${userID}&page=${pageIndex * pageSize}&limit=${pageSize}`
     : null;
 };

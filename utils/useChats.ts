@@ -36,7 +36,7 @@ function useChats({ conversationID, pageSize }: UseChatProps) {
       // @ts-ignore
       const newChat = { ...chat._doc, author: chat.author };
       if (!t) return [newChat];
-      return [...t, newChat];
+      return [newChat, ...t];
     });
   };
 

@@ -7,7 +7,6 @@ import { Chat as ChatType } from "../../types/typing";
 import Pusher from "pusher";
 import getEnvVar from "../../utils/getEnvVar";
 
-
 const pusher = new Pusher({
   appId: getEnvVar("PUSHER_APP_ID"),
   key: getEnvVar("PUSHER_APP_KEY"),
@@ -21,13 +20,14 @@ export default async function handler(
   res: NextApiResponse
 ) {
   await dbConnect();
-  const { conversationID, limit } = req.query;
+  const { conversationID, page, limit } = req.query;
   if (req.method === "GET") {
     try {
       const chats = await Chat.find({ conversationID: conversationID })
         .populate({ path: "author", select: "name image", model: User })
-        .sort("createdAt")
-        .limit(typeof limit === "string" ? parseInt(limit) : 10);
+        .sort("-createdAt")
+        .skip(typeof page === "string" ? parseInt(page as string) : 0)
+        .limit(typeof limit === "string" ? parseInt(limit as string) : 10);
 
       return res.status(200).send(chats);
     } catch (err) {
