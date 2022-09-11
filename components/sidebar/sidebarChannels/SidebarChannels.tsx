@@ -27,13 +27,19 @@ const SidebarChannels = ({ setChannelName }: Props) => {
   const { user } = useConnectedUser();
   const [searchInput, setSearchInput] = useState<string>("");
   const debouncedQuery = useDebounce(searchInput, 500);
-  const { channels, channelsIsError, channelsIsLoading, addUser } = useChannels(
-    {
-      pageSize: 5,
-      query: debouncedQuery,
-      userID: user?._id,
-    }
-  );
+  const {
+    channels,
+    channelsIsError,
+    channelsIsLoading,
+    addUser,
+    channelsIsLoadingMore,
+    channelsIsReachingEnd,
+    setSize
+  } = useChannels({
+    pageSize: 5,
+    query: debouncedQuery,
+    userID: user?._id,
+  });
 
   const [activeChannel, setActiveChannel] = useState<null | Channel>(null);
   const { modalOpen, close, open } = useModal();
@@ -76,8 +82,8 @@ const SidebarChannels = ({ setChannelName }: Props) => {
           />
         )}
       </ModalContainer>
-      <div className="bg-gray-700 h-full w-full flex flex-col md:w-[400px] lg:w-[500px] ">
-        <div className="flex-1">
+      <div className="bg-gray-700 h-screen w-full flex flex-col md:w-[400px] lg:w-[500px] ">
+        <div className="flex-1 flex flex-col">
           <ModalContainer>
             <Sidebar
               channelInfo={activeChannel}
@@ -98,7 +104,7 @@ const SidebarChannels = ({ setChannelName }: Props) => {
             </button>
           </div>
 
-          <div className="p-6">
+          <div className="px-6 py-2 flex flex-col flex-grow-[1] basis-2">
             {/* search input */}
             <div className="mb-6 bg-gray-200 rounded-lg px-2 py-3 flex justify-start border focus-within:border-gray-400 transition-colors">
               <div className="h-6 text-white-0 mr-2">
@@ -113,7 +119,7 @@ const SidebarChannels = ({ setChannelName }: Props) => {
               />
             </div>
             {/* liste of channels */}
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-2 px-2  w-full overflow-y-scroll flex-grow-[1] scrollbar-none basis-2">
               {/* card */}
               {channelsIsLoading ? (
                 <>
@@ -135,10 +141,21 @@ const SidebarChannels = ({ setChannelName }: Props) => {
                   );
                 })
               )}
+              <button
+              type="button"
+              className="bg-gray-500 text-primary font-medium px-4 py-2 rounded-lg hover:bg-gray-200 disabled:hover:bg-gray-500 transition-colors"
+                disabled={channelsIsLoadingMore || channelsIsReachingEnd}
+                onClick={() => setSize(prev => prev + 1)}
+              >
+                {channelsIsLoadingMore
+                  ? "loading..."
+                  : channelsIsReachingEnd
+                  ? "no more channels"
+                  : "load more"}
+              </button>
             </ul>
           </div>
         </div>
-        {modalOpen && <BackdropInvisible onClick={close}></BackdropInvisible>}
         <Footer
           modalOpen={modalOpen}
           open={open}
@@ -146,6 +163,7 @@ const SidebarChannels = ({ setChannelName }: Props) => {
           userName={user?.name}
         />
       </div>
+      {modalOpen && <BackdropInvisible onClick={close}></BackdropInvisible>}
     </>
   );
 };

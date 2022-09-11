@@ -23,7 +23,7 @@ type Props = {
 const Footer = ({ userImge, userName, modalOpen, open }: Props) => {
   const { user } = useConnectedUser();
   return (
-    <footer className="relative py-6 px-8 flex items-center bg-gray-900 w-full h-auto">
+    <footer className="relative py-6 px-8 flex items-center bg-gray-900 basis-1 grow-0">
       <div className="flex-1 flex items-center">
         <div className="w-12 h-12 rounded-lg overflow-hidden mr-8">
           {userImge ? (

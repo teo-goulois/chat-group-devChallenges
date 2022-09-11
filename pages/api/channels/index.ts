@@ -4,13 +4,12 @@ import dbConnect from "../../../lib/dbConnect";
 import Conversation from "../../../model/Conversation";
 import User from "../../../model/User";
 
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   await dbConnect();
-  const { userID, q } = req.query;
+  const { userID, q, page, limite } = req.query;
   if (req.method === "GET") {
     try {
       if (q) {
@@ -22,13 +21,17 @@ export default async function handler(
             : {}
         )
           .populate({ path: "author", model: User, select: "name" })
-          .populate({ path: "members", model: User, select: "name image" });
+          .populate({ path: "members", model: User, select: "name image" })
+          .skip(typeof page === "string" ? parseInt(page as string) : 0)
+          .limit(typeof limite === "string" ? parseInt(limite as string) : 10);
 
         return res.status(200).send(conversations);
       }
       const conv = await Conversation.find({ members: { $in: userID } })
         .populate({ path: "author", model: User, select: "name" })
-        .populate({ path: "members", model: User, select: "name image" });
+        .populate({ path: "members", model: User, select: "name image" })
+        .skip(typeof page === "string" ? parseInt(page as string) : 0)
+        .limit(typeof limite === "string" ? parseInt(limite as string) : 10);
       return res.status(200).send(conv);
     } catch (err) {
       return res.status(500).json(err);

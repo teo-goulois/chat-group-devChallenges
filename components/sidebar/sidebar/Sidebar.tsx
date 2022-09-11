@@ -36,7 +36,7 @@ const Sidebar = ({ isOpen, close, channelInfo }: Props) => {
       variants={variants}
       animate={isOpen ? "open" : "closed"}
       transition={{ ease: "easeIn" }}
-      className="fixed bg-gray-700 h-full w-full md:w-[500px] flex flex-col z-10"
+      className="fixed bg-gray-700 h-screen w-full md:w-[500px] flex flex-col z-10"
     >
       <div className="flex-1">
         <div className="flex items-center justify-start  p-4 shadow-lg">
@@ -62,7 +62,7 @@ const Sidebar = ({ isOpen, close, channelInfo }: Props) => {
             Members
           </h2>
           {/* card */}
-          <div className="flex flex-col gap-2 flex-1 w-full ">
+          <div className="flex flex-col gap-2 px-2  w-full overflow-y-scroll flex-grow-[1] scrollbar-none basis-2 ">
             {channelInfo?.members.map((member) => {
               return <MemberCard key={member._id} userInfo={member} />;
             })}
@@ -70,13 +70,13 @@ const Sidebar = ({ isOpen, close, channelInfo }: Props) => {
           <button
             type="button"
             onClick={handleLeave}
-            className="bg-red text-primary text-lg font-medium px-4 py-2 rounded-lg hover:scale-105 transition-transform relative top-0"
+            className="bg-red ml-auto text-primary text-lg font-medium px-4 py-2 rounded-lg hover:scale-105 transition-transform relative top-0"
           >
             leave
           </button>
         </div>
       </div>
-      <footer className="relative bottom-0 py-6 px-8 flex items-center bg-gray-900">
+      <footer className="relative  py-6 px-8 flex items-center bg-gray-900 basis-1">
         <div className="flex-1 flex items-center">
           <div className="w-12 h-12 rounded-lg overflow-hidden mr-8">
             <img
